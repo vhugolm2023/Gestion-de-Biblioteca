@@ -23,6 +23,17 @@ public class Libro {
         this.stock = stock;
     }
 
+    public Libro(String titulo, String autor, double precio, int stock) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.precio = precio;
+        this.stock = stock;
+    }
+
+    public Libro() {
+    }
+    
+
     public String getId() {
         return id;
     }
