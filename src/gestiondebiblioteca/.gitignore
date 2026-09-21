@@ -1,0 +1,14 @@
+    
+# Configuración privada de NetBeans (Rutas locales, caché de usuario)
+**/nbproject/private/
+
+# Archivos de marcas de tiempo de construcción
+**/nbproject/build-impl.xml
+
+# Carpetas de salida por defecto (Compilación)
+**/build/
+**/dist/
+
+# Si usas Maven con NetBeans, ignora también esto
+target/
+.env
