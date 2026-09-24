@@ -124,12 +124,12 @@ public class LibroRepositoryMySQL implements LibroRepository {
     }
 
     @Override
-    public boolean eliminarLibro(String idlibro) {
-        String sql = "DELETE FROM libro WHERE idlibro = ?";
+    public boolean eliminarLibro(String titulo) {
+        String sql = "DELETE FROM libro WHERE titulo = ?";
 
         try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, idlibro);
+            ps.setString(1, titulo);
             int filas = ps.executeUpdate();
             return filas > 0;
 

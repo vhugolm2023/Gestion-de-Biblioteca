@@ -156,12 +156,12 @@ public class LibroRepositoryArchivo implements LibroRepository {
     }
 
     @Override
-    public boolean eliminarLibro(String idlibro) {
+    public boolean eliminarLibro(String titulo) {
         ArrayList<Libro> lista = leerTodoArchivo();
         boolean seElimino = false;
         Libro libroAEliminar = null;
         for (Libro libro : lista) {
-            if (libro.getId().equals(idlibro)) {
+            if (libro.getTitulo().equals(titulo)) {
                 libroAEliminar = libro;
                 seElimino = true;
                 break;
@@ -190,5 +190,9 @@ public boolean copiarA(LibroRepository destino) {
     }
     return todoOk;
 }
+
+
+
+
 
 }
