@@ -16,12 +16,13 @@ import java.util.List;
  * @author dan38
  */
 public class LibroRepositoryArchivo implements LibroRepository {
+
     protected String rutaarchivo;
 
     public LibroRepositoryArchivo(String rutaarchivo) {
         this.rutaarchivo = rutaarchivo;
         File archivo = new File(rutaarchivo);
-        
+
         if (!archivo.exists()) {
             try {
                 archivo.createNewFile();
@@ -31,45 +32,42 @@ public class LibroRepositoryArchivo implements LibroRepository {
         }
     }
 
-    public ArrayList<Libro> leerTodoArchivo(){
+    public ArrayList<Libro> leerTodoArchivo() {
         ArrayList<Libro> lista = new ArrayList();
-        try (BufferedReader br = new BufferedReader(new FileReader(rutaarchivo))){
-          String linea;
+        try (BufferedReader br = new BufferedReader(new FileReader(rutaarchivo))) {
+            String linea;
             while ((linea = br.readLine()) != null) {
-            String[] partes = linea.split("\\^");
-            String id = partes[0];
-            String titulo = partes[1];
-            String autor = partes[2];
-            double precio = Double.parseDouble(partes[3]);
-            int stock = Integer.parseInt(partes[4]);
-            Libro libro = new Libro(id, titulo, autor, precio, stock);
-            lista.add(libro);
+                String[] partes = linea.split("\\^");
+                String id = partes[0];
+                String titulo = partes[1];
+                String autor = partes[2];
+                double precio = Double.parseDouble(partes[3]);
+                int stock = Integer.parseInt(partes[4]);
+                Libro libro = new Libro(id, titulo, autor, precio, stock);
+                lista.add(libro);
             }
 
         } catch (Exception e) {
             System.out.println("No se pudo leeer nada" + e.getMessage());
         }
         return lista;
-        
-        
+
     }
-    
-    
+
     @Override
     public List<Libro> mostrarTodos() {
         ArrayList<Libro> lista = leerTodoArchivo();
         if (lista.isEmpty()) {
             System.out.println("Lista esta vacía");
             return lista;
-            
-        }
-        else{
+
+        } else {
             for (Libro libro : lista) {
                 System.out.println(libro);
             }
         }
 
-    return lista;
+        return lista;
     }
 
     @Override
@@ -79,7 +77,7 @@ public class LibroRepositoryArchivo implements LibroRepository {
             if (libros.getTitulo().equalsIgnoreCase(titulo)) {
                 return libros;
             }
-            
+
         }
         return null;
     }
@@ -88,41 +86,73 @@ public class LibroRepositoryArchivo implements LibroRepository {
     public List<Libro> buscarPorAutor(String autor) {
         ArrayList<Libro> lista = leerTodoArchivo();
         ArrayList<Libro> librosAutor = new ArrayList<>();
-        
+
         for (Libro libro : lista) {
             if (libro.getAutor().equalsIgnoreCase(autor)) {
                 librosAutor.add(libro);
             }
-            
+
         }
         return librosAutor;
-            
-        }
 
-
-
+    }
 
     @Override
     public List<Libro> buscarPorRangoDePrecios(double precio1, double precio2) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ArrayList<Libro> lista = leerTodoArchivo();
+        ArrayList<Libro> resultado = new ArrayList<>();
+        for (Libro libro : lista) {
+            if (libro.getPrecio() >= precio1 && libro.getPrecio() <= precio2) {
+                resultado.add(libro);
+            }
+        }
+        return resultado;
+
     }
 
     @Override
     public List<Libro> buscarPorCantidadMinimaEnStock(int cantidad) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ArrayList<Libro> lista = leerTodoArchivo();
+        ArrayList<Libro> resultado = new ArrayList<>();
+        for (Libro libro : lista) {
+            if (libro.getStock() >= cantidad) {
+                resultado.add(libro);
+            }
+        }
+        return resultado;
+
     }
 
     @Override
     public boolean insertarLibro(Libro libro1) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ArrayList<Libro> lista = leerTodoArchivo();
+        for (Libro libro : lista) {
+            if (libro.getId().equals(libro1.getId())) {
+                return false;
+            }
+
+        }
+        lista.add(libro1);
+        return true;
     }
 
     @Override
     public boolean eliminarLibro(String idlibro) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ArrayList<Libro> lista = leerTodoArchivo();
+        boolean seElimino = false;
+        Libro libroAEliminar = null;
+        for (Libro libro : lista) {
+            if (libro.getId().equals(idlibro)) {
+                libroAEliminar = libro;
+                seElimino = true;
+                break;
+            }
+        }
+        if (libroAEliminar != null) {
+            lista.remove(libroAEliminar);
+            
+        }
+        return seElimino;
     }
 
-    
-        }   
-    
-
+}
