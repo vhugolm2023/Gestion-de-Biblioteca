@@ -7,7 +7,9 @@ package gestiondebiblioteca;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +55,18 @@ public class LibroRepositoryArchivo implements LibroRepository {
         return lista;
 
     }
+    
+    private void escribirTodoArchivo(List<Libro> lista) {
+    try (PrintWriter pw = new PrintWriter(new FileWriter(rutaarchivo))) {
+        for (Libro libro : lista) {
+            pw.println(libro.getId() + "^" + libro.getTitulo() + "^"
+                    + libro.getAutor() + "^" + libro.getPrecio() + "^"
+                    + libro.getStock());
+        }
+    } catch (IOException e) {
+        System.out.println("No se pudo escribir en el archivo: " + e.getMessage());
+    }
+}
 
     @Override
     public List<Libro> mostrarTodos() {
@@ -133,6 +147,7 @@ public class LibroRepositoryArchivo implements LibroRepository {
 
         }
         lista.add(libro1);
+        escribirTodoArchivo(lista);
         return true;
     }
 
