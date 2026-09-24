@@ -35,7 +35,7 @@ import java.sql.*;
 
         @Override
         public Libro buscarPorTitulo(String titulo) {
-            String sql = "SELECT id,titulo,autor,precio,stock FROM libro WHERE titulo = ?";
+            String sql = "SELECT idlibro,titulo,autor,precio,stock FROM libro WHERE titulo = ?";
             try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
                 ps.setString(1, titulo);
                 ResultSet rs = ps.executeQuery();
@@ -127,22 +127,20 @@ import java.sql.*;
 
     
     @Override
-    public boolean eliminarLibro(String idlibro) {
+     public boolean eliminarLibro(String idlibro) {
         String sql = "DELETE FROM libro WHERE idlibro = ?";
-        try (Connection con = ConexionBD.getConnection(); PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        
+        try (Connection con = ConexionBD.getConnection(); 
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
             ps.setString(1, idlibro);
             int filas = ps.executeUpdate();
-            if (filas > 0) {
-                ResultSet rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return ps.executeUpdate() > 0;
-                }
-                return true;
-            }
+            return filas > 0;
+            
         } catch (SQLException e) {
-            System.out.println("Error al insertar: " + e.getMessage());
+            System.out.println("Error al eliminar: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     private Libro mapearFila(ResultSet rs) throws SQLException {
