@@ -153,4 +153,9 @@ import java.sql.*;
         return l;
     }
 
+    @Override
+    public boolean copiarA(LibroRepository destino) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }
