@@ -165,6 +165,7 @@ public class LibroRepositoryArchivo implements LibroRepository {
         }
         if (libroAEliminar != null) {
             lista.remove(libroAEliminar);
+            escribirTodoArchivo(lista);
             
         }
         return seElimino;
