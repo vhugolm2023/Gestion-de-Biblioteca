@@ -3,8 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/dan38/Documents/NetBeansProjects/Gestion-de-Biblioteca/src/gestiondebiblioteca/LibroRepositoryArchivo.java</file>
-            <file>file:/C:/Users/dan38/Documents/NetBeansProjects/Gestion-de-Biblioteca/src/gestiondebiblioteca/LibroRepositoryMySQL.java</file>
+            <file>file:/C:/Users/victo/Documents/NetBeansProjects/GestionDeBiblioteca/src/gestiondebiblioteca/GestionDeBiblioteca.java</file>
+            <file>file:/C:/Users/victo/Documents/NetBeansProjects/GestionDeBiblioteca/src/gestiondebiblioteca/.gitignore</file>
+            <file>file:/C:/Users/victo/Documents/NetBeansProjects/GestionDeBiblioteca/src/gestiondebiblioteca/Libro.java</file>
+            <file>file:/C:/Users/victo/Documents/NetBeansProjects/GestionDeBiblioteca/src/gestiondebiblioteca/LibroRepository.java</file>
+            <file>file:/C:/Users/victo/Documents/NetBeansProjects/GestionDeBiblioteca/src/gestiondebiblioteca/LibroRepositoryMySQL.java</file>
+            <file>file:/C:/Users/victo/Documents/NetBeansProjects/GestionDeBiblioteca/src/gestiondebiblioteca/ConexionBD.java</file>
+            <file>file:/C:/Users/victo/Documents/NetBeansProjects/GestionDeBiblioteca/src/gestiondebiblioteca/.env</file>
+            <file>file:/C:/Users/victo/Documents/NetBeansProjects/GestionDeBiblioteca/src/gestiondebiblioteca/LibroRepositoryArchivo.java</file>
         </group>
     </open-files>
 </project-private>

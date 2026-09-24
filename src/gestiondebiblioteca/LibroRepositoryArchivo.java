@@ -35,7 +35,7 @@ public class LibroRepositoryArchivo implements LibroRepository {
     }
 
     public ArrayList<Libro> leerTodoArchivo() {
-        ArrayList<Libro> lista = new ArrayList();
+        ArrayList<Libro> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(rutaarchivo))) {
             String linea;
             while ((linea = br.readLine()) != null) {
