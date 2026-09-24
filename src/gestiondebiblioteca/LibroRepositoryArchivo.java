@@ -169,9 +169,26 @@ public class LibroRepositoryArchivo implements LibroRepository {
         }
         if (libroAEliminar != null) {
             lista.remove(libroAEliminar);
+            escribirTodoArchivo(lista);
             
         }
         return seElimino;
     }
+    @Override
+public boolean copiarA(LibroRepository destino) {
+    List<Libro> libros = leerTodoArchivo();
+    if (libros.isEmpty()) {
+        return false;
+    }
+    boolean todoOk = true;
+    for (Libro libro : libros) {
+        Libro copia = new Libro(libro.getId(), libro.getTitulo(),
+                libro.getAutor(), libro.getPrecio(), libro.getStock());
+        if (!destino.insertarLibro(copia)) {
+            todoOk = false;
+        }
+    }
+    return todoOk;
+}
 
 }
