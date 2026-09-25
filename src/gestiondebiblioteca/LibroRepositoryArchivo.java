@@ -69,6 +69,18 @@ public class LibroRepositoryArchivo implements LibroRepository {
     }
 }
 
+    private String generarNuevoId(ArrayList<Libro> lista) {
+    int maximo = 0;
+
+    for (Libro libro : lista) {
+        int idActual = Integer.parseInt(libro.getId());
+        if (idActual > maximo) {
+            maximo = idActual;
+        }
+    }
+
+    return String.valueOf(maximo + 1);
+}
 
     @Override
     public List<Libro> mostrarTodos() {
@@ -142,6 +154,8 @@ public class LibroRepositoryArchivo implements LibroRepository {
     @Override
     public boolean insertarLibro(Libro libro1) {
         ArrayList<Libro> lista = leerTodoArchivo();
+         String nuevoId = generarNuevoId(lista);
+    libro1.setId(nuevoId);
         for (Libro libro : lista) {
             if (libro.getId().equals(libro1.getId())) {
                 return false;
@@ -156,12 +170,12 @@ public class LibroRepositoryArchivo implements LibroRepository {
     }
 
     @Override
-    public boolean eliminarLibro(String titulo) {
+    public boolean eliminarLibro(String id) {
         ArrayList<Libro> lista = leerTodoArchivo();
         boolean seElimino = false;
         Libro libroAEliminar = null;
         for (Libro libro : lista) {
-            if (libro.getTitulo().equals(titulo)) {
+            if (libro.getId().equals(id)) {
                 libroAEliminar = libro;
                 seElimino = true;
                 break;

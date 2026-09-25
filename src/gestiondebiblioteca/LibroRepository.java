@@ -18,7 +18,7 @@ public interface LibroRepository {
     List<Libro> buscarPorRangoDePrecios(double precio1, double precio2);
     List<Libro> buscarPorCantidadMinimaEnStock(int cantidad);
     boolean insertarLibro(Libro libro1);
-    boolean eliminarLibro (String titulo);
+    boolean eliminarLibro (String id);
     boolean copiarA(LibroRepository destino);
     
 }
