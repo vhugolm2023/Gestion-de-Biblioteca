@@ -56,46 +56,34 @@ public class LibroRepositoryArchivo implements LibroRepository {
 
     }
 
-    
     private void escribirTodoArchivo(List<Libro> lista) {
-    try (PrintWriter pw = new PrintWriter(new FileWriter(rutaarchivo))) {
-        for (Libro libro : lista) {
-            pw.println(libro.getId() + "^" + libro.getTitulo() + "^"
-                    + libro.getAutor() + "^" + libro.getPrecio() + "^"
-                    + libro.getStock());
+        try (PrintWriter pw = new PrintWriter(new FileWriter(rutaarchivo))) {
+            for (Libro libro : lista) {
+                pw.println(libro.getId() + "^" + libro.getTitulo() + "^"
+                        + libro.getAutor() + "^" + libro.getPrecio() + "^"
+                        + libro.getStock());
+            }
+        } catch (IOException e) {
+            System.out.println("No se pudo escribir en el archivo: " + e.getMessage());
         }
-    } catch (IOException e) {
-        System.out.println("No se pudo escribir en el archivo: " + e.getMessage());
     }
-}
 
     private String generarNuevoId(ArrayList<Libro> lista) {
-    int maximo = 0;
+        int maximo = 0;
 
-    for (Libro libro : lista) {
-        int idActual = Integer.parseInt(libro.getId());
-        if (idActual > maximo) {
-            maximo = idActual;
-        }
-    }
-
-    return String.valueOf(maximo + 1);
-}
-
-    @Override
-    public List<Libro> mostrarTodos() {
-        ArrayList<Libro> lista = leerTodoArchivo();
-        if (lista.isEmpty()) {
-            System.out.println("Lista esta vacía");
-            return lista;
-
-        } else {
-            for (Libro libro : lista) {
-                System.out.println(libro);
+        for (Libro libro : lista) {
+            int idActual = Integer.parseInt(libro.getId());
+            if (idActual > maximo) {
+                maximo = idActual;
             }
         }
 
-        return lista;
+        return String.valueOf(maximo + 1);
+    }
+
+    @Override
+    public List<Libro> mostrarTodos() {
+        return leerTodoArchivo();
     }
 
     @Override
@@ -154,8 +142,8 @@ public class LibroRepositoryArchivo implements LibroRepository {
     @Override
     public boolean insertarLibro(Libro libro1) {
         ArrayList<Libro> lista = leerTodoArchivo();
-         String nuevoId = generarNuevoId(lista);
-    libro1.setId(nuevoId);
+        String nuevoId = generarNuevoId(lista);
+        libro1.setId(nuevoId);
         for (Libro libro : lista) {
             if (libro.getId().equals(libro1.getId())) {
                 return false;
@@ -184,29 +172,26 @@ public class LibroRepositoryArchivo implements LibroRepository {
         if (libroAEliminar != null) {
             lista.remove(libroAEliminar);
             escribirTodoArchivo(lista);
-            
+
         }
         return seElimino;
     }
+
     @Override
-public boolean copiarA(LibroRepository destino) {
-    List<Libro> libros = leerTodoArchivo();
-    if (libros.isEmpty()) {
-        return false;
-    }
-    boolean todoOk = true;
-    for (Libro libro : libros) {
-        Libro copia = new Libro(libro.getId(), libro.getTitulo(),
-                libro.getAutor(), libro.getPrecio(), libro.getStock());
-        if (!destino.insertarLibro(copia)) {
-            todoOk = false;
+    public boolean copiarA(LibroRepository destino) {
+        List<Libro> libros = leerTodoArchivo();
+        if (libros.isEmpty()) {
+            return false;
         }
+        boolean todoOk = true;
+        for (Libro libro : libros) {
+            Libro copia = new Libro(libro.getId(), libro.getTitulo(),
+                    libro.getAutor(), libro.getPrecio(), libro.getStock());
+            if (!destino.insertarLibro(copia)) {
+                todoOk = false;
+            }
+        }
+        return todoOk;
     }
-    return todoOk;
-}
-
-
-
-
 
 }
