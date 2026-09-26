@@ -181,14 +181,15 @@ public class GestionDeBiblioteca {
 
     public static void mostrarMenu(String nombreActivo, String nombreOtro) {
         System.out.println("");
-        System.out.println("Menu" + nombreActivo);
-        System.out.println("Mostrar todos los libros");
-        System.out.println("Buscar libro por titulo");
-        System.out.println("Buscar libros por autor");
-        System.out.println("Buscar libros por rango de precios");
-        System.out.println("Buscar libros por cantidad minima en stock");
-        System.out.println("Insertar nuevo libro");
-        System.out.println("Eliminar libro por titulo");
-        System.out.println("Hacer copia");
+        System.out.println("Menu " + nombreActivo);
+        System.out.println("1. Mostrar todos los libros");
+        System.out.println("2. Buscar libro por titulo");
+        System.out.println("3. Buscar libros por autor");
+        System.out.println("4. Buscar libros por rango de precios");
+        System.out.println("5. Buscar libros por cantidad minima en stock");
+        System.out.println("6. Insertar nuevo libro");
+        System.out.println("7. Eliminar libro por titulo");
+        System.out.println("8. Hacer copia");
+        System.out.println("0. Salir");
     }
 }
