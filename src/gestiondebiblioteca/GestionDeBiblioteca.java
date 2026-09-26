@@ -1,4 +1,4 @@
-    /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
@@ -81,19 +81,20 @@ public class GestionDeBiblioteca {
                     System.out.println("Dime el autor");
                     String nombreAutor = sc.nextLine();
                     List<Libro> porAutor = activo.buscarPorAutor(nombreAutor);
-                    for (Libro librosAutor : porAutor) {
-                        System.out.println(librosAutor);
+                    if (porAutor.isEmpty()) {
+                        System.out.println("Ningún libro con ese autor");
+                    } else {
+                        for (Libro librosAutor : porAutor) {
+                            System.out.println(librosAutor);
+                        }
                     }
-
-                    System.out.println("Ningun libro con ese autor");
-
                     break;
 
                 case 4:
                     System.out.println("Dime precio 1");
-                    int precio1 = Integer.parseInt(sc.nextLine());
+                    double precio1 = Double.parseDouble(sc.nextLine());
                     System.out.println("Dime precio 2");
-                    int precio2 = Integer.parseInt(sc.nextLine());
+                    double precio2 = Double.parseDouble(sc.nextLine());
                     List<Libro> libros = activo.buscarPorRangoDePrecios(precio1, precio2);
                     for (Libro libro : libros) {
                         System.out.println(libro);
@@ -132,22 +133,44 @@ public class GestionDeBiblioteca {
                     System.out.println("Introduce titulo");
                     String titulo1 = sc.nextLine();
                     List<Libro> librosss = activo.mostrarTodos();
+                    List<Libro> coincidencias = new ArrayList<>();
+
                     for (Libro libro : librosss) {
                         if (libro.getTitulo().equalsIgnoreCase(titulo1)) {
                             contador++;
-                            if (contador > 1) {
-                                System.out.println(libro.getTitulo() + "id" + libro.getId());
-                            }
+                            coincidencias.add(libro);
                         }
+                    }
+
+                    if (contador == 0) {
+                        System.out.println("No hay ningún libro con ese título");
+                    } else if (contador == 1) {
+                        Libro unico = coincidencias.get(0);
+                        activo.eliminarLibro(unico.getId());
+                        System.out.println("Libro eliminado");
+                    } else {
+                        System.out.println("Hay varios libros con ese título, elige por id:");
+                        for (Libro libro : coincidencias) {
+                            System.out.println(libro.getId() + " - " + libro.getTitulo());
+                        }
+                        System.out.println("Introduce el id a eliminar");
+                        String idElegido = sc.nextLine();
+                        activo.eliminarLibro(idElegido);
+                        System.out.println("Libro eliminado");
                     }
 
                     break;
 
                 case 8:
-
+                    boolean ok = activo.copiarA(otro);
+                    if (ok) {
+                        System.out.println("Copia realizada con éxito");
+                    } else {
+                        System.out.println("Hubo algún problema al copiar, o no había libros que copiar");
+                    }
                     break;
                 case 0:
-                    System.out.println("");
+                    System.out.println("Saliendo del programa");
                     break;
 
                 default:
