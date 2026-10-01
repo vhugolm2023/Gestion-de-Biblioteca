@@ -1,0 +1,4 @@
+1^El Quijote^Miguel de Cervantes^15.5^3
+2^1984^George Orwell^12.0^5
+3^Cien años de soledad^Gabriel García Márquez^18.9^2
+4^Fahrenheit 451^Ray Bradbury^10.75^0
