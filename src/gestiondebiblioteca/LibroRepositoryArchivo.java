@@ -14,13 +14,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @author dan38
+ * Implementación de {@link LibroRepository} que guarda los libros en un
+ * archivo de texto plano.
+ * <p>
+ * Cada línea del archivo representa un libro con el formato
+ * {@code id^titulo^autor^precio^stock}, usando {@code ^} como separador.
+ *@author HugoLopez
+ *@author DanielCarazo
  */
 public class LibroRepositoryArchivo implements LibroRepository {
 
+     /** Ruta del archivo donde se almacenan los libros. */
     protected String rutaarchivo;
 
+    /**
+     * Crea el repositorio y, si el archivo no existe, lo crea vacío.
+     *
+     * @param rutaarchivo ruta del archivo de texto a utilizar
+     */
     public LibroRepositoryArchivo(String rutaarchivo) {
         this.rutaarchivo = rutaarchivo;
         File archivo = new File(rutaarchivo);
@@ -34,6 +45,13 @@ public class LibroRepositoryArchivo implements LibroRepository {
         }
     }
 
+    /**
+     * Lee el archivo completo y convierte cada línea en un {@link Libro}.
+     * Si ocurre un error de lectura o de formato, se muestra un mensaje y se
+     * devuelven los libros leídos hasta ese momento.
+     *
+     * @return lista con todos los libros del archivo
+     */
     public ArrayList<Libro> leerTodoArchivo() {
         ArrayList<Libro> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(rutaarchivo))) {
@@ -56,6 +74,11 @@ public class LibroRepositoryArchivo implements LibroRepository {
 
     }
 
+    /**
+     * Sobrescribe el archivo con la lista de libros indicada, una línea por libro.
+     *
+     * @param lista libros que quedarán guardados en el archivo
+     */
     private void escribirTodoArchivo(List<Libro> lista) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(rutaarchivo))) {
             for (Libro libro : lista) {
