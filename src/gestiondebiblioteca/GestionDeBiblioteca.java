@@ -9,16 +9,32 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
+ * Clase principal del programa de gestión de biblioteca.
+ * <p>
+ * Al arrancar, el usuario elige con qué repositorio trabajar (archivo de
+ * texto plano o base de datos MySQL) y después maneja un menú por consola
+ * para consultar, insertar y eliminar libros, o copiar todos los libros
+ * al otro repositorio.
  *
- * @author victo
+ * @author DanielCarazo
+ * @author HugoLopez
  */
 public class GestionDeBiblioteca {
 
+    /** Lector de la entrada por consola. */
     private static Scanner sc = new Scanner(System.in);
-    /**
-     * @param args the command line arguments
-     */
+
+    /** Ruta del archivo de texto donde se guardan los libros. */
     private static final String RUTA_ARCHIVO = "libros.txt";
+
+    /**
+     * Punto de entrada del programa.
+     * <p>
+     * Pide al usuario el repositorio activo y muestra el menú en bucle hasta
+     * que se elige la opción 0 (salir).
+     *
+     * @param args argumentos de línea de comandos (no se usan)
+     */
 
     public static void main(String[] args) {
 
@@ -33,8 +49,13 @@ public class GestionDeBiblioteca {
         System.out.println("¿Con qué repositorio quieres trabajar?");
         System.out.println("1 -- Archivo de texto plano");
         System.out.println("2 -- Con la base de datos");
+         // Se lee la elección como texto y se convierte a número.
+        // Si se escribe algo que no es un número lanzará NumberFormatException.
         int eleccion = Integer.parseInt(sc.nextLine());
 
+          // Se define cuál es el repositorio activo (con el que se trabaja)
+        // y cuál es el otro (destino de la copia en la opción 8).
+        // Cualquier valor distinto de 1 se interpreta como MySQL.
         if (eleccion == 1) {
             activo = repoArchivo;
             otro = repoMySQL;
@@ -47,6 +68,8 @@ public class GestionDeBiblioteca {
             nombreOtro = "Archivo";
         }
 
+         // Bucle principal: muestra el menú y ejecuta la opción elegida
+        // hasta que el usuario escribe 0.
         int opcion;
         do {
             mostrarMenu(nombreActivo, nombreOtro);
@@ -54,6 +77,8 @@ public class GestionDeBiblioteca {
             opcion = Integer.parseInt(sc.nextLine());
 
             switch (opcion) {
+                // CASE 1 - Mostrar todos los libros del repositorio activo.
+                // Si no hay ninguno, se avisa con un mensaje.
                 case 1:
                     List<Libro> todos = activo.mostrarTodos();
                     if (todos.isEmpty()) {
@@ -67,6 +92,8 @@ public class GestionDeBiblioteca {
 
                     break;
 
+                    // CASE 2 - Buscar un libro por su título.
+                // Muestra el libro encontrado o un mensaje si no existe.
                 case 2:
                     System.out.println("Dime titulo");
                     Libro encontrado = activo.buscarPorTitulo(sc.nextLine());
@@ -77,6 +104,9 @@ public class GestionDeBiblioteca {
                     }
 
                     break;
+                    
+                    // CASE 3 - Buscar todos los libros de un autor.
+                // Muestra cada libro o un mensaje si no hay coincidencias.
                 case 3:
                     System.out.println("Dime el autor");
                     String nombreAutor = sc.nextLine();
