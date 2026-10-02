@@ -9,11 +9,22 @@ import java.util.List;
 import java.sql.*;
 
 /**
+ * Implementación de {@link LibroRepository} que guarda los libros en una
+ * base de datos MySQL, en la tabla {@code libro}.
+ * <p>
+ * Las conexiones se obtienen mediante {@link ConexionBD#getConnection()} y
+ * todas las consultas usan {@link PreparedStatement}. Si ocurre un
+ * {@link SQLException}, se muestra el error por consola.
  *
- * @author dan38
+ * @author DanielCarazo
+ * @author HugoLopez
  */
 public class LibroRepositoryMySQL implements LibroRepository {
 
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Libro> mostrarTodos() {
         List<Libro> L = new ArrayList<>();
@@ -30,7 +41,11 @@ public class LibroRepositoryMySQL implements LibroRepository {
         return L;
 
     }
-
+/**
+     * {@inheritDoc}
+     * <p>
+     * Devuelve la primera fila que coincida con el título indicado.
+     */
     @Override
     public Libro buscarPorTitulo(String titulo) {
         String sql = "SELECT idlibro,titulo,autor,precio,stock FROM libro WHERE titulo = ?";
@@ -48,7 +63,9 @@ public class LibroRepositoryMySQL implements LibroRepository {
         return null;
 
     }
-
+/**
+     * {@inheritDoc}
+     */
     @Override
     public List<Libro> buscarPorAutor(String autor) {
         List<Libro> L = new ArrayList<>();
@@ -65,7 +82,9 @@ public class LibroRepositoryMySQL implements LibroRepository {
 
         return L;
     }
-
+ /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Libro> buscarPorRangoDePrecios(double precio1, double precio2) {
         List<Libro> L = new ArrayList<>();
@@ -83,7 +102,9 @@ public class LibroRepositoryMySQL implements LibroRepository {
 
         return L;
     }
-
+/**
+     * {@inheritDoc}
+     */
     @Override
     public List<Libro> buscarPorCantidadMinimaEnStock(int cantidad) {
         List<Libro> L = new ArrayList<>();
@@ -100,7 +121,12 @@ public class LibroRepositoryMySQL implements LibroRepository {
 
         return L;
     }
-
+/**
+     * {@inheritDoc}
+     * <p>
+     * El id lo genera la base de datos (clave autogenerada) y se establece
+     * en el objeto {@code libro1} tras la inserción.
+     */
     @Override
     public boolean insertarLibro(Libro libro1) {
         String sql = "INSERT INTO libro (titulo,autor,precio,stock) VALUES (?,?,?,?)";
@@ -122,7 +148,9 @@ public class LibroRepositoryMySQL implements LibroRepository {
         }
         return false;
     }
-
+/**
+     * {@inheritDoc}
+     */
     @Override
     public boolean eliminarLibro(String id) {
         String sql = "DELETE FROM libro WHERE idlibro = ?";
@@ -138,7 +166,13 @@ public class LibroRepositoryMySQL implements LibroRepository {
             return false;
         }
     }
-
+/**
+     * Convierte la fila actual de un {@link ResultSet} en un {@link Libro}.
+     *
+     * @param rs resultado de la consulta, posicionado en la fila a leer
+     * @return el libro con los datos de la fila
+     * @throws SQLException si ocurre un error al leer alguna columna
+     */
     private Libro mapearFila(ResultSet rs) throws SQLException {
         Libro l = new Libro();
         l.setId(rs.getString("idlibro"));
@@ -148,7 +182,12 @@ public class LibroRepositoryMySQL implements LibroRepository {
         l.setStock(rs.getInt("stock"));
         return l;
     }
-
+/**
+     * {@inheritDoc}
+     * <p>
+     * Se crea una copia de cada libro antes de insertarlo en el destino,
+     * que le asignará su propio id.
+     */
     @Override
     public boolean copiarA(LibroRepository destino) {
         List<Libro> libros = mostrarTodos();
