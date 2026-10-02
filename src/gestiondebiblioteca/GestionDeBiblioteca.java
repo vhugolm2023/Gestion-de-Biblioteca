@@ -120,6 +120,9 @@ public class GestionDeBiblioteca {
                     }
                     break;
 
+                    // CASE 4 - Buscar libros dentro de un rango de precios.
+                // Pide el precio mínimo y el máximo (ambos incluidos) y
+                // muestra los libros que estén en ese rango.
                 case 4:
                     System.out.println("Dime precio 1");
                     double precio1 = Double.parseDouble(sc.nextLine());
@@ -132,6 +135,8 @@ public class GestionDeBiblioteca {
 
                     break;
 
+                    // CASE 5 - Buscar libros con un stock mínimo.
+                // Muestra los libros que tengan al menos la cantidad indicada.
                 case 5:
                     System.out.println("Dime cantidad minima en stock");
                     int cantidadminima = Integer.parseInt(sc.nextLine());
@@ -142,6 +147,9 @@ public class GestionDeBiblioteca {
 
                     break;
 
+                    // CASE 6 - Insertar un nuevo libro.
+                // Pide título, autor, precio y stock, crea el libro (sin id)
+                // y lo inserta; el repositorio le asigna el id.
                 case 6:
 
                     System.out.println("Dime titulo");
@@ -158,6 +166,12 @@ public class GestionDeBiblioteca {
 
                     break;
 
+                    // CASE 7 - Eliminar un libro por título.
+                // Busca los libros con ese título (sin distinguir mayúsculas):
+                //  - 0 coincidencias: avisa de que no existe.
+                //  - 1 coincidencia: lo elimina directamente.
+                //  - varias: muestra id y título de cada una y pide el id
+                //    del libro que se quiere eliminar.
                 case 7:
                     int contador = 0;
                     System.out.println("Introduce titulo");
@@ -191,6 +205,9 @@ public class GestionDeBiblioteca {
 
                     break;
 
+                    // CASE 8 - Hacer copia.
+                // Copia todos los libros del repositorio activo al otro
+                // repositorio e indica si la copia fue correcta.
                 case 8:
                     boolean ok = activo.copiarA(otro);
                     if (ok) {
@@ -199,16 +216,26 @@ public class GestionDeBiblioteca {
                         System.out.println("Hubo algún problema al copiar, o no había libros que copiar");
                     }
                     break;
+                    // CASE 0 - Salir del programa.
+                // Muestra un mensaje; la condición del while termina el bucle.
                 case 0:
                     System.out.println("Saliendo del programa");
                     break;
 
+                    // DEFAULT - Cualquier otro número no es una opción válida.
                 default:
                     System.out.println("Opción no valida");
             }
         } while (opcion != 0);
     }
 
+    /**
+     * Muestra por consola el menú de opciones del programa.
+     *
+     * @param nombreActivo nombre del repositorio con el que se está trabajando
+     *                     (se muestra en el título del menú)
+     * @param nombreOtro   nombre del otro repositorio, destino de la copia
+     */
     public static void mostrarMenu(String nombreActivo, String nombreOtro) {
         System.out.println("");
         System.out.println("Menu " + nombreActivo);
