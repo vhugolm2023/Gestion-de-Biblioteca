@@ -91,6 +91,12 @@ public class LibroRepositoryArchivo implements LibroRepository {
         }
     }
 
+    /**
+     * Genera un nuevo id numérico: el mayor id existente más uno.
+     *
+     * @param lista libros actuales, de los que se calcula el máximo id
+     * @return el nuevo identificador como cadena
+     */
     private String generarNuevoId(ArrayList<Libro> lista) {
         int maximo = 0;
 
@@ -104,11 +110,20 @@ public class LibroRepositoryArchivo implements LibroRepository {
         return String.valueOf(maximo + 1);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Libro> mostrarTodos() {
         return leerTodoArchivo();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * La comparación de títulos no distingue mayúsculas de minúsculas.
+     * Si hay varios con el mismo título, devuelve el primero.
+     */
     @Override
     public Libro buscarPorTitulo(String titulo) {
         ArrayList<Libro> lista = leerTodoArchivo();
@@ -120,6 +135,12 @@ public class LibroRepositoryArchivo implements LibroRepository {
         }
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * La comparación del autor no distingue mayúsculas de minúsculas.
+     */
 
     @Override
     public List<Libro> buscarPorAutor(String autor) {
@@ -136,6 +157,9 @@ public class LibroRepositoryArchivo implements LibroRepository {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Libro> buscarPorRangoDePrecios(double precio1, double precio2) {
         ArrayList<Libro> lista = leerTodoArchivo();
@@ -149,6 +173,9 @@ public class LibroRepositoryArchivo implements LibroRepository {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Libro> buscarPorCantidadMinimaEnStock(int cantidad) {
         ArrayList<Libro> lista = leerTodoArchivo();
@@ -162,6 +189,12 @@ public class LibroRepositoryArchivo implements LibroRepository {
 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Genera un id nuevo (máximo existente + 1), lo asigna al libro y
+     * reescribe el archivo con el libro añadido al final.
+     */
     @Override
     public boolean insertarLibro(Libro libro1) {
         ArrayList<Libro> lista = leerTodoArchivo();
@@ -180,6 +213,11 @@ public class LibroRepositoryArchivo implements LibroRepository {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Si el libro existe, reescribe el archivo sin él.
+     */
     @Override
     public boolean eliminarLibro(String id) {
         ArrayList<Libro> lista = leerTodoArchivo();
@@ -200,6 +238,12 @@ public class LibroRepositoryArchivo implements LibroRepository {
         return seElimino;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Se crea una copia de cada libro antes de insertarlo en el destino,
+     * que le asignará su propio id.
+     */
     @Override
     public boolean copiarA(LibroRepository destino) {
         List<Libro> libros = leerTodoArchivo();
