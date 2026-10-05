@@ -7,7 +7,6 @@
 
 # Carpetas de salida por defecto (Compilación)
 **/build/
-**/dist/
 
 # Si usas Maven con NetBeans, ignora también esto
 target/
