@@ -518,3 +518,100 @@ Tabla intermedia N:M entre pedido y libro: cada renglón del ticket (§6).
 - **Alternativa descartada:** `DOUBLE` para precios y `VARCHAR` libre para estados y formas de pago.
 
 ---
+
+
+
+## 9. Datos de prueba
+
+Datos coherentes con el caso: la hoja de Universidad de Carmen (§8) y el ticket del pedido 10482 (§6). Los ISBN, DNI, correos de empleados y direcciones son **inventados**. El pedido 10401 (2025) se ha añadido para comprobar que el precio antiguo de *Ficciones* se conserva. Hay 4 editoriales, 4 autores (*Antología del cuento* tiene dos), 5 libros, 3 tiendas, 6 empleados, 4 clientes, 7 pedidos y 13 líneas. Se cargan al final de `schema.sql`, en el orden que respeta las claves foráneas.
+
+```sql
+INSERT INTO editorial (id, nombre, pais, telefono) VALUES
+(1, 'Alfaguara',      'España', '913 000 101'),
+(2, 'Alianza',        'España', '913 000 102'),
+(3, 'Plaza & Janés',  'España', '934 000 103'),
+(4, 'Editorial RM',   'México', '+52 55 0000 0104');
+
+INSERT INTO autor (id, nombre, nacionalidad, anio_nacimiento) VALUES
+(1, 'Julio Cortázar',     'Argentina', 1914),
+(2, 'Jorge Luis Borges',  'Argentina', 1899),
+(3, 'Isabel Allende',     'Chilena',   1942),
+(4, 'Juan Rulfo',         'Mexicana',  1917);
+
+INSERT INTO tienda (id, nombre, direccion, telefono, ciudad) VALUES
+(1, 'Centro',       'Calle Mayor 12',          '976 000 111', 'Villa Serena'),
+(2, 'Ribera',       'Avenida del Río 5',       '976 000 222', 'Aldeaverde'),
+(3, 'Universidad',  'Plaza del Campus 1',      '976 000 333', 'Villa Serena');
+
+INSERT INTO libro (isbn, titulo, anio_publicacion, num_paginas, precio_catalogo, editorial_id) VALUES
+('9780000000011', 'Rayuela',               1963, 600, 16.50, 1),
+('9780000000028', 'Ficciones',             1944, 224, 12.00, 2),
+('9780000000035', 'Cuentos de Eva Luna',   1989, 320, 14.90, 3),
+('9780000000042', 'Antología del cuento',  1975, 280, 18.00, 2),
+('9780000000059', 'Pedro Páramo',          1955, 128, 10.00, 4);
+
+INSERT INTO libro_autor (isbn, autor_id, rol) VALUES
+('9780000000011', 1, 'principal'),
+('9780000000028', 2, 'principal'),
+('9780000000035', 3, 'principal'),
+('9780000000042', 1, 'principal'),
+('9780000000042', 2, 'colaborador'),
+('9780000000059', 4, 'principal');
+
+INSERT INTO inventario (tienda_id, isbn, copias, fecha_conteo) VALUES
+-- Centro
+(1, '9780000000011', 2, '2026-03-05'),
+(1, '9780000000028', 5, '2026-03-05'),
+(1, '9780000000035', 3, '2026-03-05'),
+(1, '9780000000059', 4, '2026-03-05'),
+-- Ribera
+(2, '9780000000011', 0, '2026-03-03'),
+(2, '9780000000028', 1, '2026-03-03'),
+(2, '9780000000042', 2, '2026-03-03'),
+(2, '9780000000059', 6, '2026-03-03'),
+-- Universidad (hoja de Carmen, §8 del caso)
+(3, '9780000000011', 4, '2026-03-02'),
+(3, '9780000000028', 2, '2026-03-02'),
+(3, '9780000000035', 0, '2026-03-02'),
+(3, '9780000000042', 6, '2026-02-28');
+
+INSERT INTO empleado (dni, nombre, apellidos, cargo, fecha_contratacion, correo, tienda_id) VALUES
+('12345678Z', 'Marta',  'López Ibáñez',  'cajero',    '2022-09-01', 'marta.lopez@villaserena.example',  1),
+('23456789D', 'Pablo',  'Sanz Ortiz',    'encargado', '2018-02-15', 'pablo.sanz@villaserena.example',   1),
+('34567890V', 'Irene',  'Gil Navarro',   'librero',   '2023-04-10', 'irene.gil@villaserena.example',    2),
+('45678901G', 'Raúl',   'Ortega Pons',   'encargado', '2016-06-01', 'raul.ortega@villaserena.example',  2),
+('56789012B', 'Sofía',  'Marín Cano',    'librero',   '2024-01-08', 'sofia.marin@villaserena.example',  3),
+('67890123B', 'Hugo',   'Vidal Rey',     'cajero',    '2025-02-03', 'hugo.vidal@villaserena.example',   3);
+
+INSERT INTO cliente (id, nombre, correo, telefono, es_socio, fecha_alta) VALUES
+(1, 'Andrés Pérez',    'andres.p@correo.es',    NULL,        FALSE, NULL),
+(2, 'Laura Fernández', 'laura.f@correo.es',     '600 111 222', TRUE, '2024-05-20'),
+(3, 'Javier Moreno',   'javier.m@correo.es',    '600 333 444', TRUE, '2025-11-02'),
+(4, 'Clara Núñez',     'clara.n@correo.es',     NULL,        FALSE, NULL);
+
+INSERT INTO pedido (id, fecha, forma_pago, estado, tienda_id, empleado_dni, cliente_id) VALUES
+(10401, '2025-06-10', 'efectivo', 'entregado', 1, '12345678Z', 4),  -- antes de la subida de precio
+(10482, '2026-03-12', 'tarjeta',  'entregado', 1, '12345678Z', 1),  -- el ticket de la §6
+(10483, '2026-03-14', 'efectivo', 'entregado', 1, '23456789D', 2),
+(10484, '2026-03-15', 'bizum',    'entregado', 2, '34567890V', 3),
+(10485, '2026-03-18', 'tarjeta',  'preparado', 3, '56789012B', 2),
+(10486, '2026-03-20', 'efectivo', 'cancelado', 3, '67890123B', 1),
+(10487, '2026-03-25', 'bizum',    'entregado', 1, '12345678Z', 2);
+
+INSERT INTO linea_pedido (pedido_id, isbn, cantidad, precio_unitario) VALUES
+(10401, '9780000000028', 1, 10.00),   -- Ficciones cuando costaba 10 €
+(10482, '9780000000011', 1, 16.50),
+(10482, '9780000000028', 2, 12.00),
+(10482, '9780000000059', 1, 10.00),   -- total del ticket: 50,50 €
+(10483, '9780000000035', 1, 14.90),
+(10483, '9780000000028', 1, 12.00),
+(10484, '9780000000059', 2, 10.00),
+(10484, '9780000000042', 1, 18.00),
+(10485, '9780000000042', 2, 18.00),
+(10485, '9780000000011', 1, 16.50),
+(10486, '9780000000028', 1, 12.00),
+(10487, '9780000000011', 1, 16.50),
+(10487, '9780000000059', 1, 10.00);
+```
+
+---
