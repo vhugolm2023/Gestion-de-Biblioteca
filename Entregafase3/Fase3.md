@@ -107,7 +107,7 @@ Además aparecen **datos que pertenecen a una relación** y no a una entidad, y 
 
 ## 4. Diagrama entidad-relación
 
-![Diagrama entidad-relación de la librería Páginas de Villa Serena con diez tablas: editorial, libro, autor, libro_autor, tienda, inventario, empleado, cliente, pedido y linea_pedido, unidas por relaciones uno a muchos](Entregafase3/diagrama_er.png)
+![Diagrama entidad-relación de la librería Páginas de Villa Serena con diez tablas: editorial, libro, autor, libro_autor, tienda, inventario, empleado, cliente, pedido y linea_pedido, unidas por relaciones uno a muchos](Gestion-de-Biblioteca/Entregafase3/diagrama_er.png)
 
 El diagrama tiene **10 tablas**: 7 entidades (en azul) y 3 tablas intermedias de relaciones N:M (en naranja). En cada línea, la marca simple está en el lado «uno» y la pata de gallo en el lado «muchos». Las N:M no se dibujan directamente: se ven como dos relaciones 1:N que parten de la tabla intermedia.
 
