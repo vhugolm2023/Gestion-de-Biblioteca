@@ -104,3 +104,24 @@ Además aparecen **datos que pertenecen a una relación** y no a una entidad, y 
 14. Cuando un empleado cambia de tienda, figura en la nueva y no se conserva el historial.
 
 ---
+
+## 4. Diagrama entidad-relación
+
+![Diagrama entidad-relación de la librería Páginas de Villa Serena con diez tablas: editorial, libro, autor, libro_autor, tienda, inventario, empleado, cliente, pedido y linea_pedido, unidas por relaciones uno a muchos](docs/imagenes/diagrama_er.png)
+
+El diagrama tiene **10 tablas**: 7 entidades (en azul) y 3 tablas intermedias de relaciones N:M (en naranja). En cada línea, la marca simple está en el lado «uno» y la pata de gallo en el lado «muchos». Las N:M no se dibujan directamente: se ven como dos relaciones 1:N que parten de la tabla intermedia.
+
+### Tabla de relaciones
+
+| Relación | Tipo | Cómo se resuelve |
+|---|---|---|
+| editorial – libro | 1:N | `libro.editorial_id` |
+| libro – autor | N:M | Tabla intermedia `libro_autor` (con `rol`) |
+| tienda – libro | N:M | Tabla intermedia `inventario` (con `copias` y `fecha_conteo`) |
+| tienda – empleado | 1:N | `empleado.tienda_id` |
+| tienda – pedido | 1:N | `pedido.tienda_id` |
+| empleado – pedido | 1:N | `pedido.empleado_dni` |
+| cliente – pedido | 1:N | `pedido.cliente_id` |
+| pedido – libro | N:M | Tabla intermedia `linea_pedido` (con `cantidad` y `precio_unitario`) |
+
+---
