@@ -19,3 +19,27 @@
 9. [Datos de prueba](#9-datos-de-prueba)
 10. [Consultas de prueba](#10-consultas-de-prueba)
 11. [Limitaciones y mejoras futuras](#11-limitaciones-y-mejoras-futuras)
+
+## 2. Análisis del caso
+
+Para cada elemento se indica entre paréntesis la sección del caso de la que sale (§1 a §8).
+
+### 2.1 Entidades y atributos
+
+| Entidad | Atributos encontrados | Fragmento del caso |
+|---|---|---|
+| Tienda | nombre, dirección, teléfono, ciudad | §1: «su nombre, su dirección, su teléfono y su ciudad» |
+| Libro | ISBN, título, año de publicación, número de páginas, precio de catálogo | §2: «se identifica por su ISBN… título, año… páginas… precio de catálogo» |
+| Editorial | nombre, país, teléfono | §2: «su nombre, el país y un teléfono de contacto» |
+| Autor | nombre, nacionalidad, año de nacimiento | §2: «el nombre, la nacionalidad y el año de nacimiento» |
+| Empleado | DNI, nombre, apellidos, cargo, fecha de contratación, correo | §4: «el DNI, el nombre y los apellidos, el cargo… la fecha de contratación y el correo» |
+| Cliente | nombre, correo (único), teléfono (opcional), si es socio, fecha de alta | §5: «nombre completo, correo… teléfono (opcional) y fecha de alta» |
+| Pedido | número, fecha, forma de pago, estado | §6: «Tiene una fecha, una forma de pago… y un estado» |
+
+Además aparecen **datos que pertenecen a una relación** y no a una entidad, y por eso acaban en tablas intermedias:
+
+| Dato | Pertenece a la relación | Fragmento del caso |
+|---|---|---|
+| Rol del autor (principal o colaborador) | Libro – Autor | §2: «distinguir si el autor es principal o colaborador» |
+| Copias y fecha del último recuento | Tienda – Libro | §3: «cuántas copias hay, y cuándo se contó por última vez» |
+| Cantidad y precio realmente cobrado | Pedido – Libro | §6: «de cada uno me interesa la cantidad… lo que realmente se cobró» |
