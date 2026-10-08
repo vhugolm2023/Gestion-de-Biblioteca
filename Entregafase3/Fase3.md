@@ -472,3 +472,49 @@ Tabla intermedia N:M entre pedido y libro: cada renglón del ticket (§6).
 | `precio_unitario` | `DECIMAL(6,2)` | Sí | Euros que se cobraron **por copia en el momento de la venta**. No cambia aunque el precio de catálogo suba después. No puede ser negativo. |
 
 ---
+
+## 8. Decisiones de diseño
+
+### Decisión 1 · Guardar el precio cobrado en `linea_pedido`
+
+- **Qué se decidió:** cada línea de pedido guarda `precio_unitario`, el precio por copia en el momento de la venta, aparte de `libro.precio_catalogo`.
+- **Por qué:** Elena subió *Ficciones* de 10 € a 12 € y no quiere que los pedidos antiguos muestren el precio nuevo (§6). Con este diseño, el pedido 10401 (2025) sigue valiendo 10,00 € y el 10482 (2026) 50,50 €, como en el ticket.
+- **Alternativa descartada:** leer siempre el precio de `libro.precio_catalogo` al calcular el total. Es más simple, pero cualquier subida de precio reescribiría la historia de las facturas.
+
+### Decisión 2 · Libro y autor como relación N:M con tabla intermedia y rol
+
+- **Qué se decidió:** tabla `libro_autor` con clave primaria `(isbn, autor_id)` y una columna `rol`.
+- **Por qué:** hay libros de dos o tres autores y autores con muchos libros (§2), y Elena quiere buscar «todos los libros de Cortázar» sin leer títulos. El rol (principal o colaborador) es un dato de la relación, no del libro ni del autor.
+- **Alternativa descartada:** una columna `autor` en `libro` con varios nombres separados por «/», como en la hoja de Carmen (§8). No se puede buscar con fiabilidad, repite nombres y no admite el rol.
+
+### Decisión 3 · Inventario como tabla intermedia en lugar de una columna `stock` en `libro`
+
+- **Qué se decidió:** tabla `inventario` con clave `(tienda_id, isbn)` y las columnas `copias` y `fecha_conteo`. Un libro que no está en una tienda no tiene fila.
+- **Por qué:** el fallo de las hojas actuales es justo ese: un único stock por libro no dice en qué tienda están las copias (§1 y §3). Las copias y la fecha del último recuento dependen de la pareja tienda-libro.
+- **Alternativa descartada:** una columna `stock` en `libro`, o tres columnas `stock_centro`, `stock_ribera`, `stock_universidad`. La primera pierde la tienda; la segunda obliga a cambiar la estructura si se abre una cuarta tienda.
+
+### Decisión 4 · No guardar el total del pedido
+
+- **Qué se decidió:** `pedido` no tiene columna de total; se calcula con `SUM(cantidad * precio_unitario)`.
+- **Por qué:** es un dato derivado (§6, ticket). Si se guardara, habría que mantenerlo sincronizado con las líneas y podría quedar un total que no suma lo que dicen sus líneas.
+- **Alternativa descartada:** guardar `total` en `pedido` para consultarlo más rápido. Con el volumen de una librería no compensa el riesgo de incoherencia.
+
+### Decisión 5 · Un único `cliente` para socios y no socios
+
+- **Qué se decidió:** una sola tabla `cliente` con `es_socio` y `fecha_alta`, que solo se rellena en los socios (`CHECK`).
+- **Por qué:** el caso dice que quien compra sin ser socio también se registra con nombre y correo (§5), así que todos tienen los mismos datos básicos y todos pueden hacer pedidos. Si más adelante un cliente se hace socio, basta con actualizar la fila.
+- **Alternativa descartada:** dos tablas, `socio` y `cliente_ocasional`. Obligaría a que `pedido` apunte a una u otra, y cambiar de estado sería mover datos entre tablas.
+
+### Decisión 6 · Claves naturales para libro y empleado, y clave numérica para el resto
+
+- **Qué se decidió:** `libro.isbn` (`CHAR(13)`) y `empleado.dni` (`CHAR(9)`) son claves primarias; el resto de tablas usa un `id INT AUTO_INCREMENT`.
+- **Por qué:** el ISBN y el DNI ya identifican de forma única en el mundo real y el caso los trata como identificadores (§2 y §4). En cambio, el nombre de una editorial, una tienda o un autor puede repetirse o corregirse.
+- **Alternativa descartada:** un `id` numérico en todas las tablas. Funcionaría, pero obligaría a mantener además el ISBN como columna `UNIQUE` y los `JOIN` serían menos legibles.
+
+### Decisión 7 · Tipos adecuados para dinero, fechas y estados
+
+- **Qué se decidió:** `DECIMAL(6,2)` para los precios, `DATE` para las fechas, `ENUM` para forma de pago, estado y cargo, y `CHAR(13)` para el ISBN.
+- **Por qué:** `DECIMAL` evita los errores de redondeo de `DOUBLE` al sumar euros. `DATE` permite filtrar por año (`YEAR(fecha)`). Los `ENUM` impiden valores no previstos como «efectivoo». El ISBN es texto de longitud fija (los ceros a la izquierda no se pueden perder).
+- **Alternativa descartada:** `DOUBLE` para precios y `VARCHAR` libre para estados y formas de pago.
+
+---
