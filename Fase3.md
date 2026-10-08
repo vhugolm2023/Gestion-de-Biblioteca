@@ -43,3 +43,16 @@ Además aparecen **datos que pertenecen a una relación** y no a una entidad, y 
 | Rol del autor (principal o colaborador) | Libro – Autor | §2: «distinguir si el autor es principal o colaborador» |
 | Copias y fecha del último recuento | Tienda – Libro | §3: «cuántas copias hay, y cuándo se contó por última vez» |
 | Cantidad y precio realmente cobrado | Pedido – Libro | §6: «de cada uno me interesa la cantidad… lo que realmente se cobró» |
+
+### 2.2 Relaciones
+
+| Relación | Cardinalidad | Razonamiento |
+|---|---|---|
+| Editorial – Libro | 1:N | Una editorial publica muchos libros; un libro lo publica una sola editorial (§2). |
+| Libro – Autor | N:M | Un libro puede tener dos o tres autores y un autor tiene muchos libros (§2). Se resuelve con `libro_autor`, que guarda el rol. |
+| Tienda – Libro | N:M | Una tienda tiene muchos libros y un libro puede estar en varias tiendas, o en ninguna (§3). Se resuelve con `inventario`, que guarda copias y fecha de conteo. |
+| Tienda – Empleado | 1:N | En cada tienda trabajan varios empleados; cada empleado trabaja en una sola tienda (§4). |
+| Tienda – Pedido | 1:N | Un pedido se hace siempre en una tienda; una tienda tiene muchos pedidos (§6). |
+| Empleado – Pedido | 1:N | Un pedido lo atiende un empleado; un empleado atiende muchos pedidos (§6). |
+| Cliente – Pedido | 1:N | Un pedido lo compra un cliente; un cliente puede hacer muchos pedidos (§6). |
+| Pedido – Libro | N:M | Un pedido lleva varios libros distintos y un libro aparece en muchos pedidos (§6). Se resuelve con `linea_pedido`, que guarda cantidad y precio cobrado. |
