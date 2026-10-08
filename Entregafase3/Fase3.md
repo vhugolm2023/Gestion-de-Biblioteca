@@ -615,3 +615,88 @@ INSERT INTO linea_pedido (pedido_id, isbn, cantidad, precio_unitario) VALUES
 ```
 
 ---
+## 10. Consultas de prueba
+
+Se resuelven las **7 preguntas** de la §7 del caso. Los resultados son los que devuelve MySQL con los datos de prueba anteriores.
+
+### 10.1 ¿Qué libros tiene la tienda Centro y cuántas copias quedan?
+
+```sql
+SELECT l.titulo, i.copias, i.fecha_conteo
+FROM inventario i
+JOIN tienda t ON t.id = i.tienda_id
+JOIN libro  l ON l.isbn = i.isbn
+WHERE t.nombre = 'Centro'
+ORDER BY l.titulo;
+```
+
+| titulo | copias | fecha_conteo |
+|---|---:|---|
+| Cuentos de Eva Luna | 3 | 2026-03-05 |
+| Ficciones | 5 | 2026-03-05 |
+| Pedro Páramo | 4 | 2026-03-05 |
+| Rayuela | 2 | 2026-03-05 |
+
+### 10.2 ¿Cuál es el libro más vendido en cada tienda?
+
+Se cuentan las unidades de los pedidos no cancelados y se queda con el primero de cada tienda (si hay empate, salen todos los empatados).
+
+```sql
+WITH ventas AS (
+    SELECT t.nombre AS tienda, l.titulo, SUM(lp.cantidad) AS unidades,
+           RANK() OVER (PARTITION BY t.id ORDER BY SUM(lp.cantidad) DESC) AS posicion
+    FROM linea_pedido lp
+    JOIN pedido p ON p.id = lp.pedido_id
+    JOIN tienda t ON t.id = p.tienda_id
+    JOIN libro  l ON l.isbn = lp.isbn
+    WHERE p.estado <> 'cancelado'
+    GROUP BY t.id, t.nombre, l.isbn, l.titulo
+)
+SELECT tienda, titulo, unidades
+FROM ventas
+WHERE posicion = 1
+ORDER BY tienda, titulo;
+```
+
+| tienda | titulo | unidades |
+|---|---|---:|
+| Centro | Ficciones | 4 |
+| Ribera | Pedro Páramo | 2 |
+| Universidad | Antología del cuento | 2 |
+
+### 10.3 ¿Cuánto ha facturado cada tienda este año?
+
+El total no se guarda: se calcula desde las líneas. Se descartan los pedidos cancelados y el pedido de 2025.
+
+```sql
+SELECT t.nombre AS tienda,
+       SUM(lp.cantidad * lp.precio_unitario) AS facturado_2026
+FROM pedido p
+JOIN tienda t        ON t.id = p.tienda_id
+JOIN linea_pedido lp ON lp.pedido_id = p.id
+WHERE YEAR(p.fecha) = 2026
+  AND p.estado <> 'cancelado'
+GROUP BY t.id, t.nombre
+ORDER BY facturado_2026 DESC;
+```
+
+| tienda | facturado_2026 |
+|---|---:|
+| Centro | 103.90 |
+| Universidad | 52.50 |
+| Ribera | 38.00 |
+
+### 10.4 ¿Qué clientes han hecho más de dos pedidos?
+
+```sql
+SELECT c.nombre, c.correo, COUNT(*) AS pedidos
+FROM cliente c
+JOIN pedido p ON p.cliente_id = c.id
+GROUP BY c.id, c.nombre, c.correo
+HAVING COUNT(*) > 2
+ORDER BY pedidos DESC;
+```
+
+| nombre | correo | pedidos |
+|---|---|---:|
+| Laura Fernández | laura.f@correo.es | 3 |
