@@ -83,3 +83,24 @@ Además aparecen **datos que pertenecen a una relación** y no a una entidad, y 
 | Distinción «socio / no socio» como dos entidades | Son la misma persona con distinto estado; se modela con un único `cliente` (ver decisión 5). |
 
 ---
+
+
+
+## 3. Reglas de negocio
+
+1. Una editorial publica muchos libros; cada libro lo publica una única editorial.
+2. Cada libro se identifica por su ISBN, que tiene 13 cifras.
+3. Un libro puede tener varios autores y un autor puede tener varios libros; en cada libro cada autor figura como principal o como colaborador.
+4. Cada tienda guarda, para cada libro que tiene, el número de copias y la fecha del último recuento; un libro que no está en una tienda no aparece en su inventario.
+5. El número de copias de un libro en una tienda no puede ser negativo.
+6. Cada empleado trabaja en una única tienda y su cargo es librero, cajero o encargado.
+7. Un cliente se identifica por su correo electrónico, que no puede repetirse; el teléfono es opcional.
+8. Un socio es un cliente con fecha de alta; quien no es socio no tiene fecha de alta.
+9. Un pedido se hace siempre en una única tienda, lo atiende un único empleado y lo compra un único cliente.
+10. Un pedido tiene fecha, una forma de pago (efectivo, tarjeta o bizum) y un estado (preparado, entregado o cancelado).
+11. Un pedido puede llevar varios libros distintos, y de cada uno se guarda la cantidad, que debe ser mayor que cero.
+12. Cada línea de pedido guarda el precio que realmente se cobró por copia, que no puede ser negativo y no cambia aunque cambie el precio de catálogo.
+13. El total de un pedido no se guarda: se calcula sumando `cantidad × precio_unitario` de sus líneas.
+14. Cuando un empleado cambia de tienda, figura en la nueva y no se conserva el historial.
+
+---
