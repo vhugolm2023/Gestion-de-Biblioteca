@@ -125,3 +125,109 @@ El diagrama tiene **10 tablas**: 7 entidades (en azul) y 3 tablas intermedias de
 | pedido – libro | N:M | Tabla intermedia `linea_pedido` (con `cantidad` y `precio_unitario`) |
 
 ---
+
+## 5. Modelo lógico
+
+Las claves foráneas están en el lado «muchos» de cada relación 1:N. En las tablas intermedias, la clave primaria es la pareja de claves foráneas.
+
+**`editorial`**
+
+| Columna | Clave | Referencia |
+|---|---|---|
+| `id` | PK |  |
+| `nombre` |  |  |
+| `pais` |  |  |
+| `telefono` |  |  |
+
+**`autor`**
+
+| Columna | Clave | Referencia |
+|---|---|---|
+| `id` | PK |  |
+| `nombre` |  |  |
+| `nacionalidad` |  |  |
+| `anio_nacimiento` |  |  |
+
+**`libro`**
+
+| Columna | Clave | Referencia |
+|---|---|---|
+| `isbn` | PK |  |
+| `titulo` |  |  |
+| `anio_publicacion` |  |  |
+| `num_paginas` |  |  |
+| `precio_catalogo` |  |  |
+| `editorial_id` | FK | `editorial.id` |
+
+**`libro_autor`**
+
+| Columna | Clave | Referencia |
+|---|---|---|
+| `isbn` | PK, FK | `libro.isbn` |
+| `autor_id` | PK, FK | `autor.id` |
+| `rol` |  |  |
+
+**`tienda`**
+
+| Columna | Clave | Referencia |
+|---|---|---|
+| `id` | PK |  |
+| `nombre` |  |  |
+| `direccion` |  |  |
+| `telefono` |  |  |
+| `ciudad` |  |  |
+
+**`inventario`**
+
+| Columna | Clave | Referencia |
+|---|---|---|
+| `tienda_id` | PK, FK | `tienda.id` |
+| `isbn` | PK, FK | `libro.isbn` |
+| `copias` |  |  |
+| `fecha_conteo` |  |  |
+
+**`empleado`**
+
+| Columna | Clave | Referencia |
+|---|---|---|
+| `dni` | PK |  |
+| `nombre` |  |  |
+| `apellidos` |  |  |
+| `cargo` |  |  |
+| `fecha_contratacion` |  |  |
+| `correo` |  |  |
+| `tienda_id` | FK | `tienda.id` |
+
+**`cliente`**
+
+| Columna | Clave | Referencia |
+|---|---|---|
+| `id` | PK |  |
+| `nombre` |  |  |
+| `correo` |  |  |
+| `telefono` |  |  |
+| `es_socio` |  |  |
+| `fecha_alta` |  |  |
+
+**`pedido`**
+
+| Columna | Clave | Referencia |
+|---|---|---|
+| `id` | PK |  |
+| `fecha` |  |  |
+| `forma_pago` |  |  |
+| `estado` |  |  |
+| `tienda_id` | FK | `tienda.id` |
+| `empleado_dni` | FK | `empleado.dni` |
+| `cliente_id` | FK | `cliente.id` |
+
+**`linea_pedido`**
+
+| Columna | Clave | Referencia |
+|---|---|---|
+| `pedido_id` | PK, FK | `pedido.id` |
+| `isbn` | PK, FK | `libro.isbn` |
+| `cantidad` |  |  |
+| `precio_unitario` |  |  |
+
+---
