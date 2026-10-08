@@ -348,3 +348,127 @@ CREATE TABLE linea_pedido (
 ```
 
 ---
+
+## 7. Diccionario de datos
+
+#### `editorial`
+
+Editorial que publica libros y a la que se hacen los pedidos de reposición (§2).
+
+| Columna | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `id` | `INT` | Sí | Identificador numérico asignado por MySQL (`AUTO_INCREMENT`). |
+| `nombre` | `VARCHAR(100)` | Sí | Nombre comercial de la editorial. Único: no puede haber dos editoriales con el mismo nombre. |
+| `pais` | `VARCHAR(60)` | Sí | País donde tiene su sede. |
+| `telefono` | `VARCHAR(20)` | Sí | Teléfono de contacto para hacer pedidos. Es texto porque admite espacios y prefijo internacional. |
+
+#### `autor`
+
+Persona que escribe libros (§2).
+
+| Columna | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `id` | `INT` | Sí | Identificador numérico del autor. |
+| `nombre` | `VARCHAR(100)` | Sí | Nombre completo con el que se busca al autor (por ejemplo, «Julio Cortázar»). |
+| `nacionalidad` | `VARCHAR(60)` | Sí | Nacionalidad del autor. |
+| `anio_nacimiento` | `SMALLINT` | Sí | Año de nacimiento (solo el año, como pide el caso). Debe estar entre 1000 y 2100. |
+
+#### `libro`
+
+Título del catálogo, identificado por su ISBN (§2).
+
+| Columna | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `isbn` | `CHAR(13)` | Sí | ISBN de 13 cifras. Longitud fija, solo dígitos (lo garantiza un `CHECK`). Se usa como clave porque ya es único en el mundo real. |
+| `titulo` | `VARCHAR(150)` | Sí | Título del libro. |
+| `anio_publicacion` | `SMALLINT` | Sí | Año de publicación de la edición del catálogo. |
+| `num_paginas` | `SMALLINT` | Sí | Número de páginas. Debe ser mayor que 0. |
+| `precio_catalogo` | `DECIMAL(6,2)` | Sí | Precio **actual** de venta en euros. Puede cambiar con el tiempo; lo que se cobró de verdad en cada venta está en `linea_pedido.precio_unitario`. No puede ser negativo. |
+| `editorial_id` | `INT` | Sí | Editorial que publica el libro. Un libro tiene una sola editorial. |
+
+#### `libro_autor`
+
+Tabla intermedia N:M entre libro y autor (§2).
+
+| Columna | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `isbn` | `CHAR(13)` | Sí | Libro del que se habla. Junto con `autor_id` forma la clave primaria. |
+| `autor_id` | `INT` | Sí | Autor que participa en ese libro. |
+| `rol` | `ENUM` | Sí | `principal` o `colaborador` (por ejemplo, quien hace el prólogo). Por defecto `principal`. |
+
+#### `tienda`
+
+Cada una de las tres librerías físicas (§1).
+
+| Columna | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `id` | `INT` | Sí | Identificador numérico de la tienda. |
+| `nombre` | `VARCHAR(50)` | Sí | Nombre de la tienda (Centro, Ribera, Universidad). Único. |
+| `direccion` | `VARCHAR(150)` | Sí | Dirección postal del local. |
+| `telefono` | `VARCHAR(20)` | Sí | Teléfono de la tienda, tal y como sale en el ticket. |
+| `ciudad` | `VARCHAR(60)` | Sí | Localidad donde está la tienda (Ribera está en Aldeaverde). |
+
+#### `inventario`
+
+Tabla intermedia N:M entre tienda y libro: copias que hay de cada libro en cada tienda (§3).
+
+| Columna | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `tienda_id` | `INT` | Sí | Tienda donde se cuentan las copias. |
+| `isbn` | `CHAR(13)` | Sí | Libro contado. Si un libro no está en una tienda, simplemente no hay fila. |
+| `copias` | `INT` | Sí | Número de copias en la estantería en el último recuento. Puede ser 0 (agotado), nunca negativo. |
+| `fecha_conteo` | `DATE` | Sí | Día en que se contaron esas copias por última vez. |
+
+#### `empleado`
+
+Persona que trabaja en una tienda (§4).
+
+| Columna | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `dni` | `CHAR(9)` | Sí | DNI con letra (8 cifras + letra). Identifica al empleado. |
+| `nombre` | `VARCHAR(50)` | Sí | Nombre de pila. |
+| `apellidos` | `VARCHAR(100)` | Sí | Apellidos. |
+| `cargo` | `ENUM` | Sí | `librero`, `cajero` o `encargado`. |
+| `fecha_contratacion` | `DATE` | Sí | Día en que fue contratado. |
+| `correo` | `VARCHAR(120)` | Sí | Correo de trabajo. Único. |
+| `tienda_id` | `INT` | Sí | Tienda donde trabaja. Es una sola; si cambia de tienda se actualiza este valor y no se guarda historial (§4). |
+
+#### `cliente`
+
+Persona que compra, sea socia o no (§5).
+
+| Columna | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `id` | `INT` | Sí | Identificador numérico del cliente. |
+| `nombre` | `VARCHAR(100)` | Sí | Nombre completo. |
+| `correo` | `VARCHAR(120)` | Sí | Correo electrónico. Único; se usa para enviar avisos y novedades. |
+| `telefono` | `VARCHAR(20)` | No | Teléfono, opcional (§5). |
+| `es_socio` | `BOOLEAN` | Sí | `TRUE` si se ha dado de alta como socio (con descuentos). Por defecto `FALSE`. |
+| `fecha_alta` | `DATE` | Solo socios | Día de alta como socio. Obligatoria si `es_socio` es `TRUE` y `NULL` para quien no es socio (lo garantiza un `CHECK`). |
+
+#### `pedido`
+
+Cabecera de una compra: un cliente, en una tienda, atendido por un empleado (§6).
+
+| Columna | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `id` | `INT` | Sí | Número de pedido (el «Pedido nº» del ticket). |
+| `fecha` | `DATE` | Sí | Día de la compra. |
+| `forma_pago` | `ENUM` | Sí | `efectivo`, `tarjeta` o `bizum`. |
+| `estado` | `ENUM` | Sí | `preparado`, `entregado` o `cancelado`. Por defecto `preparado`. |
+| `tienda_id` | `INT` | Sí | Tienda donde se hace el pedido (siempre una). |
+| `empleado_dni` | `CHAR(9)` | Sí | Empleado que atiende el pedido (siempre uno). |
+| `cliente_id` | `INT` | Sí | Cliente que compra (siempre uno). |
+
+#### `linea_pedido`
+
+Tabla intermedia N:M entre pedido y libro: cada renglón del ticket (§6).
+
+| Columna | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `pedido_id` | `INT` | Sí | Pedido al que pertenece la línea. |
+| `isbn` | `CHAR(13)` | Sí | Libro vendido. Un libro aparece una sola vez por pedido; si se compran varias copias se sube `cantidad`. |
+| `cantidad` | `INT` | Sí | Número de copias vendidas. Debe ser mayor que 0. |
+| `precio_unitario` | `DECIMAL(6,2)` | Sí | Euros que se cobraron **por copia en el momento de la venta**. No cambia aunque el precio de catálogo suba después. No puede ser negativo. |
+
+---
