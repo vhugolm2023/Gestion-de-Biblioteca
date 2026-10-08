@@ -4,7 +4,7 @@
 > **Criterio RA6 d)**: se ha documentado la estructura de la información persistente.
 > **Grupo:** _(nombres de los integrantes)_
 
-**Archivos de la entrega:** este documento (`.md`), [`schema.sql`](schema.sql) y la imagen [`docs/imagenes/diagrama_er.png`](docs/imagenes/diagrama_er.png).
+**Archivos de la entrega:** este documento (`.md`), [`schema.sql`](schema.sql) y la imagen [`docs/imagenes/diagrama_er.png`](diagrama_er.png).
 
 ## Índice
 
