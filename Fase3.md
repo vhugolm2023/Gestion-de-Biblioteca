@@ -20,6 +20,16 @@
 10. [Consultas de prueba](#10-consultas-de-prueba)
 11. [Limitaciones y mejoras futuras](#11-limitaciones-y-mejoras-futuras)
 
+## 1. Resumen del caso
+
+Páginas de Villa Serena es una librería con veinte años de historia que hoy cuenta con tres tiendas: Centro, Ribera (en el pueblo vecino de Aldeaverde) y Universidad. Su dueña, Elena Ruiz, vende libros del catálogo propio, cada uno con su editorial y sus autores, y tiene empleados repartidos por las tiendas y clientes, algunos de ellos socios con descuentos.
+
+El problema de hoy es que cada tienda lleva su propia hoja de cálculo y las cifras no coinciden con la realidad: un cliente pidió un libro en Centro, la hoja decía que había tres copias y en realidad estaban en Universidad. Además, las hojas repiten datos (la editorial en cada fila), meten varios autores en una sola celda y guardan un único «stock» por libro, sin distinguir tienda. Y si el precio de un libro cambia, los pedidos antiguos dejan de cuadrar con lo que se cobró.
+
+Elena necesita una base de datos que le diga **en todo momento cuántas copias de cada libro hay en cada tienda y cuándo se contaron**, que registre los **pedidos** con lo que realmente se cobró en cada uno, y que permita responder preguntas de negocio como el libro más vendido de cada tienda, lo facturado por tienda o los clientes más habituales.
+
+---
+
 ## 2. Análisis del caso
 
 Para cada elemento se indica entre paréntesis la sección del caso de la que sale (§1 a §8).
