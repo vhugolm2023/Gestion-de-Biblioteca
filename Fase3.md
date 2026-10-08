@@ -66,3 +66,20 @@ Además aparecen **datos que pertenecen a una relación** y no a una entidad, y 
 | Empleado – Pedido | 1:N | Un pedido lo atiende un empleado; un empleado atiende muchos pedidos (§6). |
 | Cliente – Pedido | 1:N | Un pedido lo compra un cliente; un cliente puede hacer muchos pedidos (§6). |
 | Pedido – Libro | N:M | Un pedido lleva varios libros distintos y un libro aparece en muchos pedidos (§6). Se resuelve con `linea_pedido`, que guarda cantidad y precio cobrado. |
+
+---
+
+### 2.3 Datos descartados
+
+| Dato | Motivo |
+|---|---|
+| Total del ticket (50,50 €) y subtotal de cada línea (24,00 €) | Se pueden **calcular** con `cantidad × precio_unitario`. Guardarlos permitiría que un total no cuadre con sus líneas. |
+| Columna «stock» por libro (hoja de cálculo, §3) | Es justo lo que falla hoy: no distingue tienda. Se sustituye por `inventario`. |
+| Celda «Cortázar / Borges» (§8) | Dos valores en una celda; se descompone en dos filas de `libro_autor`. |
+| Editorial repetida en cada fila de la hoja (§8) | Dato repetido; se guarda una vez en `editorial` y se referencia. |
+| Nombre y cargo del empleado dentro del ticket («Marta López (cajera)») | Ya vive en `empleado`; el pedido solo guarda la referencia. |
+| Dirección y teléfono de la tienda dentro del ticket | Ya viven en `tienda`. |
+| Historial de cambios de tienda de un empleado | Elena dice que no le importa (§4). |
+| Distinción «socio / no socio» como dos entidades | Son la misma persona con distinto estado; se modela con un único `cliente` (ver decisión 5). |
+
+---
