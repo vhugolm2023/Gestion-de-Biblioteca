@@ -774,3 +774,16 @@ GROUP BY p.id;
 | 10482 | 50.50 |
 
 ---
+
+## 11. Limitaciones y mejoras futuras
+
+| Limitación | Posible mejora |
+|---|---|
+| El pedido guarda tienda y empleado por separado, y la base de datos no impide que se asigne un empleado de otra tienda. | Añadir una clave foránea compuesta `(empleado_dni, tienda_id)` hacia `empleado`, o validarlo en la aplicación. |
+| No se guarda el historial de cambios de tienda de un empleado (Elena dijo que no lo necesita). | Tabla `empleado_tienda` con fechas de inicio y fin. |
+| `inventario` guarda el último recuento, no los movimientos: las ventas no restan copias automáticamente. | Tabla de movimientos de stock o un `TRIGGER` que descuente al entregar un pedido. |
+| No se guarda el descuento de los socios: solo se sabe quién es socio, no cuánto se rebajó. | El `precio_unitario` ya refleja lo cobrado; se podría añadir un porcentaje de descuento por línea para poder analizarlo. |
+| El precio de catálogo solo tiene el valor actual, sin historial. | Tabla `precio_libro` con fecha de inicio y fin de cada precio. |
+| No hay control de devoluciones ni pedidos a editoriales. | Nuevas tablas `devolucion` y `pedido_editorial`. |
+| Un libro solo puede aparecer una vez por pedido (clave `(pedido_id, isbn)`), aunque se vendiera a precios distintos. | Añadir un número de línea a la clave si se necesitaran precios distintos para el mismo libro en un pedido. |
+| El correo de un cliente es su único identificador natural; si lo cambia hay que actualizar la fila. | Mantener el `id` numérico como referencia y permitir actualizar el correo. |
