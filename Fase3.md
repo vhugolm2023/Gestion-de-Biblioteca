@@ -231,3 +231,120 @@ Las claves foráneas están en el lado «muchos» de cada relación 1:N. En las 
 | `precio_unitario` |  |  |
 
 ---
+
+## 6. Script SQL (schema.sql)
+
+El script completo (estructura y datos de prueba) está en [`schema.sql`](schema.sql). Se ha probado **desde cero en MySQL 8.0** sobre una base de datos vacía, sin errores. Requiere MySQL 8.0.16 o superior porque usa `CHECK`. A continuación, la parte de estructura; el orden de creación respeta las dependencias (primero las tablas a las que apuntan las claves foráneas).
+
+```sql
+DROP DATABASE IF EXISTS libreria;
+CREATE DATABASE libreria CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE libreria;
+
+CREATE TABLE editorial (
+    id        INT          PRIMARY KEY AUTO_INCREMENT,
+    nombre    VARCHAR(100) NOT NULL UNIQUE,
+    pais      VARCHAR(60)  NOT NULL,
+    telefono  VARCHAR(20)  NOT NULL
+);
+
+CREATE TABLE autor (
+    id                INT          PRIMARY KEY AUTO_INCREMENT,
+    nombre            VARCHAR(100) NOT NULL,
+    nacionalidad      VARCHAR(60)  NOT NULL,
+    anio_nacimiento   SMALLINT     NOT NULL,
+    CHECK (anio_nacimiento BETWEEN 1000 AND 2100)
+);
+
+CREATE TABLE tienda (
+    id         INT          PRIMARY KEY AUTO_INCREMENT,
+    nombre     VARCHAR(50)  NOT NULL UNIQUE,
+    direccion  VARCHAR(150) NOT NULL,
+    telefono   VARCHAR(20)  NOT NULL,
+    ciudad     VARCHAR(60)  NOT NULL
+);
+
+CREATE TABLE cliente (
+    id          INT          PRIMARY KEY AUTO_INCREMENT,
+    nombre      VARCHAR(100) NOT NULL,
+    correo      VARCHAR(120) NOT NULL UNIQUE,
+    telefono    VARCHAR(20)  NULL,
+    es_socio    BOOLEAN      NOT NULL DEFAULT FALSE,
+    fecha_alta  DATE         NULL,
+    CHECK (es_socio = FALSE OR fecha_alta IS NOT NULL)
+);
+
+CREATE TABLE libro (
+    isbn             CHAR(13)      PRIMARY KEY,
+    titulo           VARCHAR(150)  NOT NULL,
+    anio_publicacion SMALLINT      NOT NULL,
+    num_paginas      SMALLINT      NOT NULL,
+    precio_catalogo  DECIMAL(6,2)  NOT NULL,
+    editorial_id     INT           NOT NULL,
+    FOREIGN KEY (editorial_id) REFERENCES editorial(id),
+    CHECK (isbn REGEXP '^[0-9]{13}$'),
+    CHECK (num_paginas > 0),
+    CHECK (precio_catalogo >= 0)
+);
+
+-- N:M libro - autor, con dato propio (rol del autor en ese libro)
+CREATE TABLE libro_autor (
+    isbn      CHAR(13) NOT NULL,
+    autor_id  INT      NOT NULL,
+    rol       ENUM('principal','colaborador') NOT NULL DEFAULT 'principal',
+    PRIMARY KEY (isbn, autor_id),
+    FOREIGN KEY (isbn)     REFERENCES libro(isbn),
+    FOREIGN KEY (autor_id) REFERENCES autor(id)
+);
+
+-- N:M tienda - libro, con datos propios (copias y fecha del último recuento)
+CREATE TABLE inventario (
+    tienda_id       INT      NOT NULL,
+    isbn            CHAR(13) NOT NULL,
+    copias          INT      NOT NULL,
+    fecha_conteo    DATE     NOT NULL,
+    PRIMARY KEY (tienda_id, isbn),
+    FOREIGN KEY (tienda_id) REFERENCES tienda(id),
+    FOREIGN KEY (isbn)      REFERENCES libro(isbn),
+    CHECK (copias >= 0)
+);
+
+CREATE TABLE empleado (
+    dni                CHAR(9)      PRIMARY KEY,
+    nombre             VARCHAR(50)  NOT NULL,
+    apellidos          VARCHAR(100) NOT NULL,
+    cargo              ENUM('librero','cajero','encargado') NOT NULL,
+    fecha_contratacion DATE         NOT NULL,
+    correo             VARCHAR(120) NOT NULL UNIQUE,
+    tienda_id          INT          NOT NULL,
+    FOREIGN KEY (tienda_id) REFERENCES tienda(id)
+);
+
+CREATE TABLE pedido (
+    id            INT  PRIMARY KEY AUTO_INCREMENT,
+    fecha         DATE NOT NULL,
+    forma_pago    ENUM('efectivo','tarjeta','bizum')        NOT NULL,
+    estado        ENUM('preparado','entregado','cancelado') NOT NULL DEFAULT 'preparado',
+    tienda_id     INT      NOT NULL,
+    empleado_dni  CHAR(9)  NOT NULL,
+    cliente_id    INT      NOT NULL,
+    FOREIGN KEY (tienda_id)    REFERENCES tienda(id),
+    FOREIGN KEY (empleado_dni) REFERENCES empleado(dni),
+    FOREIGN KEY (cliente_id)   REFERENCES cliente(id)
+);
+
+-- N:M pedido - libro, con datos propios (cantidad y precio realmente cobrado)
+CREATE TABLE linea_pedido (
+    pedido_id        INT          NOT NULL,
+    isbn             CHAR(13)     NOT NULL,
+    cantidad         INT          NOT NULL,
+    precio_unitario  DECIMAL(6,2) NOT NULL,
+    PRIMARY KEY (pedido_id, isbn),
+    FOREIGN KEY (pedido_id) REFERENCES pedido(id),
+    FOREIGN KEY (isbn)      REFERENCES libro(isbn),
+    CHECK (cantidad > 0),
+    CHECK (precio_unitario >= 0)
+);
+```
+
+---
