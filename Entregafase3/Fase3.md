@@ -700,3 +700,77 @@ ORDER BY pedidos DESC;
 | nombre | correo | pedidos |
 |---|---|---:|
 | Laura Fernández | laura.f@correo.es | 3 |
+
+### 10.5 ¿Qué libros están agotados en una tienda pero disponibles en otra?
+
+«Agotado» significa que hay fila en `inventario` con `copias = 0`.
+
+```sql
+SELECT l.titulo,
+       ta.nombre AS tienda_agotado,
+       GROUP_CONCAT(td.nombre ORDER BY td.nombre SEPARATOR ', ') AS disponible_en
+FROM inventario ia
+JOIN tienda ta ON ta.id = ia.tienda_id
+JOIN libro  l  ON l.isbn = ia.isbn
+JOIN inventario id_ ON id_.isbn = ia.isbn AND id_.copias > 0
+JOIN tienda td ON td.id = id_.tienda_id
+WHERE ia.copias = 0
+GROUP BY l.isbn, l.titulo, ta.id, ta.nombre
+ORDER BY l.titulo, ta.nombre;
+```
+
+| titulo | tienda_agotado | disponible_en |
+|---|---|---|
+| Cuentos de Eva Luna | Universidad | Centro |
+| Rayuela | Ribera | Centro, Universidad |
+
+### 10.6 ¿Qué empleado ha atendido más pedidos?
+
+```sql
+SELECT CONCAT(e.nombre, ' ', e.apellidos) AS empleado,
+       t.nombre AS tienda,
+       COUNT(*) AS pedidos_atendidos
+FROM empleado e
+JOIN tienda t ON t.id = e.tienda_id
+JOIN pedido p ON p.empleado_dni = e.dni
+GROUP BY e.dni, e.nombre, e.apellidos, t.nombre
+ORDER BY pedidos_atendidos DESC, empleado
+LIMIT 1;
+```
+
+| empleado | tienda | pedidos_atendidos |
+|---|---|---:|
+| Marta López Ibáñez | Centro | 3 |
+
+### 10.7 ¿Qué autores tienen libros en más de una editorial?
+
+```sql
+SELECT a.nombre AS autor, COUNT(DISTINCT l.editorial_id) AS editoriales
+FROM autor a
+JOIN libro_autor la ON la.autor_id = a.id
+JOIN libro l        ON l.isbn = la.isbn
+GROUP BY a.id, a.nombre
+HAVING COUNT(DISTINCT l.editorial_id) > 1;
+```
+
+| autor | editoriales |
+|---|---:|
+| Julio Cortázar | 2 |
+
+### 10.8 Comprobación extra: el ticket y el precio histórico
+
+Esta consulta comprueba la decisión 1: el total del pedido 10482 coincide con el ticket (50,50 €) y el pedido 10401, de antes de la subida, conserva el precio antiguo de *Ficciones* (10 €).
+
+```sql
+SELECT p.id AS pedido, SUM(lp.cantidad * lp.precio_unitario) AS total
+FROM pedido p JOIN linea_pedido lp ON lp.pedido_id = p.id
+WHERE p.id IN (10401, 10482)
+GROUP BY p.id;
+```
+
+| pedido | total |
+|---|---:|
+| 10401 | 10.00 |
+| 10482 | 50.50 |
+
+---
