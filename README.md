@@ -29,3 +29,21 @@ Los comandos van en cmd, no en PowerShell.
 5. Clean and Build y Run en NetBeans. O desde la terminal, en la raíz del proyecto: `java -jar dist\GestionDeBiblioteca.jar`
 
 Siempre hay que lanzarla desde la raíz del proyecto, que es donde están el `.env` y `libros.txt`.
+
+## Configuración (.env)
+
+| Variable | Qué es | Ejemplo |
+|---|---|---|
+| `DB_URL` | URL de la base de datos | `jdbc:mysql://localhost:3306/biblioteca` |
+| `DB_USER` | Usuario de MySQL | `root` |
+| `DB_PASSWORD` | Contraseña de ese usuario | la de tu MySQL |
+
+La ruta del archivo de texto no se configura aquí: está fija en el código (`libros.txt`).
+
+## Documentación
+
+- [Manual de despliegue completo (PDF)](ManualDespliegue/manual_despliegue.pdf)
+
+## Autores
+
+Hugo Lopez y Daniel Carazo
