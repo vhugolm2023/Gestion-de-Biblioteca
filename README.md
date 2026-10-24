@@ -43,7 +43,7 @@ La ruta del archivo de texto no se configura aquí: está fija en el código (`l
 ## Documentación
 
 - [Manual de despliegue completo (PDF)](ManualDespliegue/manual_despliegue.pdf)
-- [Javadoc](javadoc/index.html)
+- [Javadoc](javadoc)
 
 ## Autores
 
